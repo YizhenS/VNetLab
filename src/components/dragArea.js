@@ -112,7 +112,9 @@ class DragArea extends React.Component{
   }
   
   
-  
+  componentDidMount(){
+    this.openFile()
+}
 
 
 

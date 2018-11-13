@@ -14,6 +14,7 @@ class CreateArea extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.addVm = this.addVm.bind(this);
         this.addHub = this.addHub.bind(this);
+        this.CreateFile = this.CreateFile.bind(this);
         this.state={
             VMname:"",
             VMos:"",
@@ -23,14 +24,21 @@ class CreateArea extends React.Component {
             HubName:"",
             HubSubnet:"",
             HubNetmast:"",
-            HubInterface:[]
+            HubInterface:[],
+            FileName:"",
+            isFile:false
            
         }
   }
   handleChange(event) {
     this.setState({[event.target.name]: event.target.value});
   }
-
+    CreateFile(){
+      console.log("add file")
+      data["name"]=this.state.FileName
+      console.log(data)
+      this.setState({isFile:true})
+    }
     addVm(){
       console.log("add vm")
       console.log(this.state.VMos)
@@ -53,31 +61,42 @@ class CreateArea extends React.Component {
 
 
     render(){
+      if(this.state.isFile===false){
         return(
-            <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0'}}>
-               
-                <label>name: </label>
-                <input  name="VMname" value={this.state.VMname} onChange={this.handleChange}/>
-                <label>os: </label>
-                <input  name="VMos" value={this.state.VMos} onChange={this.handleChange}/>
-                <label>version: </label>
-                <input  name="VMversion" value={this.state.VMversion} onChange={this.handleChange}/>
-                <label>src: </label>
-                <input  name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}/>
-                <button onClick={this.addVm}>create new vm</button>
-                <br/>
-                <label>name: </label>
-                <input name="HubName" value={this.state.HubName} onChange={this.handleChange}></input>
-                <label>subnet: </label>
-                <input name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></input>
-                <label>netmast: </label>
-                <input name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></input>
-                <button onClick={this.addHub}>create new hub</button>
-                
-
-
-            </div>
+          <div>
+            <label>File name: </label>
+                <input name="FileName" value={this.state.FileName} onChange={this.handleChange}></input>
+                <button onClick={this.CreateFile}>Newfile</button>
+          </div>
         );
+      }else{
+        return(
+          <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0'}}>
+              <label>name: </label>
+              <input  name="VMname" value={this.state.VMname} onChange={this.handleChange}/>
+              <label>os: </label>
+              <input  name="VMos" value={this.state.VMos} onChange={this.handleChange}/>
+              <label>version: </label>
+              <input  name="VMversion" value={this.state.VMversion} onChange={this.handleChange}/>
+              <label>src: </label>
+              <input  name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}/>
+              <button onClick={this.addVm}>create new vm</button>
+              <br/>
+              <label>name: </label>
+              <input name="HubName" value={this.state.HubName} onChange={this.handleChange}></input>
+              <label>subnet: </label>
+              <input name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></input>
+              <label>netmast: </label>
+              <input name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></input>
+              <button onClick={this.addHub}>create new hub</button>
+              <br/>
+              
+
+
+          </div>
+      );
+      }
+        
     }
 
 }
