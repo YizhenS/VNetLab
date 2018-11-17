@@ -8,6 +8,7 @@ import Draggable, {DraggableCore} from 'react-draggable';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import StayScrolled from 'react-stay-scrolled';
+import {saveAs,FileSaver} from 'file-saver';
 
 class Home extends React.Component {
 
@@ -81,6 +82,7 @@ class Home extends React.Component {
           this.setState({log:this.state.log.concat(["hub: "+name +"was created"])})
           this.setState({file:this.state.file.concat("Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n")})
           this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})
+          
         }
 
           CreateVm(){
@@ -214,6 +216,75 @@ class Home extends React.Component {
             })
           }
           };
+          
+          saveFileConfirm(){
+            if (this.state.file === ""){
+              confirmAlert({
+                title:" file  missing",
+                message: "No file can be saved",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+            confirmAlert({
+              title: 'Confirm to save file',
+              message: 'Are you sure saving file as: ' + this.state.FileName,
+              buttons: [
+                {
+                  label: 'Yes',
+                  onClick: () => this.save()
+                },
+                {
+                  label: 'No',
+                  onClick: () => alert('Create file canceled')
+                }
+              ]
+            })
+          }
+          }
+          save(){
+            var blob = new Blob([this.state.file], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, this.state.FileName+".cfg");
+          }
+          deleteHubConfirm(name){
+            confirmAlert({
+              title: 'Confirm to delete hub',
+              message: 'Are you sure deleting this hub: ' + name,
+              buttons: [
+                {
+                  label: 'Yes',
+                  onClick: () => this.deleteHub(name)
+                },
+                {
+                  label: 'No',
+                  onClick: () => alert('delete hub canceled')
+                }
+              ]
+            })
+          }
+          deleteVMConfirm(name){
+            confirmAlert({
+              title: 'Confirm to delete vm',
+              message: 'Are you sure deleting this vm: ' + name,
+              buttons: [
+                {
+                  label: 'Yes',
+                  onClick: () => this.deleteVm(name)
+                },
+                {
+                  label: 'No',
+                  onClick: () => alert('delete vm canceled')
+                }
+              ]
+            })
+          }
+          changeVM(){
+
+          }
 
     render(){
     var VMs = this.state.VMs;
@@ -255,19 +326,20 @@ class Home extends React.Component {
                   <input name="HubInterface" value={this.state.HubInterface} onChange={this.handleChange}></input>
                   <button onClick={()=>this.createHubConfirm()}>create new hub</button>
                   <br/>
+                  <button onClick={()=> this.saveFileConfirm()}>Save file</button>
               </div>
-                <div className="box" style={{height: '500px', width: '500px', padding: '0'}}>
+                <div className="box" style={{height: '500px', width: '500px', position: 'relative', overflow: 'auto',padding: '0'}}>
                 
                 
                   {VMs.map(vmname =>{
                     return (
-                     <Draggable bounds="parent"><div className="box"><p key={vmname}>{vmname}</p><button onClick={() => this.deleteVm(vmname)}>delete vm</button></div></Draggable>
+                     <Draggable bounds="parent"><div className="box"><p key={vmname}>{vmname}</p><button onClick={() => this.changeVM(vmname)}>Change</button><br/><button onClick={() => this.deleteVMConfirm(vmname)}>delete vm</button></div></Draggable>
                     );
                   })}
 
                   {Hubs.map(hubname =>{
                     return (
-                     <Draggable bounds="parent"><div className="box"><p key={hubname}>{hubname}</p><button onClick={() => this.deleteHub(hubname)}>delete hub</button></div></Draggable>
+                     <Draggable bounds="parent"><div className="box"><p key={hubname}>{hubname}</p><button onClick={() => this.deleteHubConfirm(hubname)}>delete hub</button></div></Draggable>
                     );
                   })}
                   
