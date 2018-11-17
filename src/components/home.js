@@ -9,6 +9,10 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import StayScrolled from 'react-stay-scrolled';
 import {saveAs,FileSaver} from 'file-saver';
+import { configure } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+configure({ adapter: new Adapter() });
 
 class Home extends React.Component {
 
