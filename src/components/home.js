@@ -1,23 +1,17 @@
 import React from "react";
-import DragArea from './dragArea';
-import CreateArea from './CreateArea';
-import ConfigFile from './configFile';
-import Console from './console';
+
 import data from '../default.json';
 import Draggable, {DraggableCore} from 'react-draggable';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import StayScrolled from 'react-stay-scrolled';
 import {saveAs,FileSaver} from 'file-saver';
-import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-
-configure({ adapter: new Adapter() });
+import "../styles/Main.css"
 
 class Home extends React.Component {
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.handleChange = this.handleChange.bind(this);
         this.addVm = this.addVm.bind(this);
         this.addHub = this.addHub.bind(this);
@@ -33,7 +27,7 @@ class Home extends React.Component {
             HubSubnet:"",
             HubNetmast:"",
             HubInterface:[],
-            FileName:"",
+            FileName:this.props.id,
             isFile:false,
             VMs:[],
             Hubs:[],
@@ -55,8 +49,7 @@ class Home extends React.Component {
         this.setState({[event.target.name]: event.target.value});
       }
         CreateFile(){
-          console.log("add file")
-          data["name"]=this.state.FileName
+          data["name"]=this.props.id
           console.log(data)
           this.setState({isFile:true})
         }
@@ -191,35 +184,7 @@ class Home extends React.Component {
              }
           }
 
-          openfileConfirm = () => {
-            if (this.state.FileName === ""){
-              confirmAlert({
-                title:"File name missing",
-                message: "You need to enter a valid file name",
-                buttons:[
-                  {
-                    label:'ok'
-                  }
-                ]
-
-              })
-             }else{
-            confirmAlert({
-              title: 'Confirm to create file',
-              message: 'Are you sure creating file as: ' + this.state.FileName,
-              buttons: [
-                {
-                  label: 'Yes',
-                  onClick: () => this.CreateFile()
-                },
-                {
-                  label: 'No',
-                  onClick: () => alert('Create file canceled')
-                }
-              ]
-            })
-          }
-          };
+          
           
           saveFileConfirm(){
             if (this.state.file === ""){
@@ -236,7 +201,7 @@ class Home extends React.Component {
              }else{
             confirmAlert({
               title: 'Confirm to save file',
-              message: 'Are you sure saving file as: ' + this.state.FileName,
+              message: 'Are you sure saving file as: ' + this.props.id,
               buttons: [
                 {
                   label: 'Yes',
@@ -252,7 +217,7 @@ class Home extends React.Component {
           }
           save(){
             var blob = new Blob([this.state.file], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, this.state.FileName+".cfg");
+            saveAs(blob, this.props.id+".cfg");
           }
           deleteHubConfirm(name){
             confirmAlert({
@@ -289,25 +254,21 @@ class Home extends React.Component {
           changeVM(){
 
           }
+          componentDidMount() {
+           
+           this.CreateFile()
+        }
 
     render(){
     var VMs = this.state.VMs;
     var Hubs = this.state.Hubs;
     var log = this.state.log;
     var file = this.state.file;
-    console.log(data)
-        if(this.state.isFile===false){
-            return(
-              <div>
-                <label>File name: </label>
-                    <input name="FileName" value={this.state.FileName} onChange={this.handleChange}></input>
-                    <button onClick={this.openfileConfirm}>Newfile</button>
-              </div>
-            );
-          }else{
+   
+        
             return(
             <div>
-                <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0'}}>
+                <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
                   <label>name: </label>
                   <input  name="VMname" value={this.state.VMname} onChange={this.handleChange}/>
                   <label>os: </label>
@@ -370,7 +331,7 @@ class Home extends React.Component {
               
         
         );
-    }
+    
 }
 
 

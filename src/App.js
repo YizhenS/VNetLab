@@ -5,6 +5,7 @@ import Draggable, {DraggableCore} from 'react-draggable';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Home from './components/home'
+import CreateFile from './components/CreateFile'
 
 class App extends Component {
   render() {
@@ -13,7 +14,7 @@ class App extends Component {
         <div>
           
           <Switch>
-            <Route path="/" component={Home} exact />
+            <Route path="/" component={CreateFile} exact />
 
             
   
