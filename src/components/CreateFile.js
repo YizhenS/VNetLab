@@ -4,7 +4,7 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import { Button } from 'reactstrap';
 import { InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
-
+import ReactFileReader from 'react-file-reader';
 
 import "../styles/create.css"
 
@@ -14,6 +14,7 @@ class CreateFile extends React.Component {
     constructor(){
         super();
         this.handleChange = this.handleChange.bind(this);
+        this.handleFiles = this.handleFiles.bind(this);
         this.state={
             isFile:false,
             fileName:""
@@ -55,6 +56,27 @@ class CreateFile extends React.Component {
         })
       }
       };
+      handleFiles = files => {
+    
+        
+        var reader = new FileReader()
+        reader.onloadend = this.handleFilesRead;
+        
+        
+
+        reader.readAsText(files[0])
+        this.setState({fileName:files[0]["name"]})
+        
+        
+        
+      }
+      handleFilesRead = (e) =>{
+        var content = e.target.result;
+        console.log(e.target)
+        this.setState({isFile:true,fileContent:content})
+      }
+
+      
 
     render(){
         if(this.state.isFile===false){
@@ -72,12 +94,16 @@ class CreateFile extends React.Component {
                   <Button onClick={this.openfileConfirm}>Create File</Button>
                 </InputGroup>
                 <a>Need help?</a>
+                <ReactFileReader handleFiles={this.handleFiles} fileTypes={[".cfg"]}>
+                <button className='btn'>Upload</button>
+                
+                </ReactFileReader>
                 </div>
                 
               </div>
             );
           }else{
-            return(<Home id={this.state.fileName}/>);
+            return(<Home id={this.state.fileName} file={this.state.fileContent}/>);
            }
         
     }

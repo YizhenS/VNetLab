@@ -8,6 +8,8 @@ import StayScrolled from 'react-stay-scrolled';
 import {saveAs,FileSaver} from 'file-saver';
 import "../styles/Main.css"
 
+import { readFile, read } from "fs";
+
 class Home extends React.Component {
 
     constructor(props){
@@ -39,7 +41,7 @@ class Home extends React.Component {
             },
             createVm:false,
             log:[],
-            file:"",
+            file:this.props.file,
             data:[],
            
            
@@ -219,6 +221,8 @@ class Home extends React.Component {
             var blob = new Blob([this.state.file], {type: "text/plain;charset=utf-8"});
             saveAs(blob, this.props.id+".cfg");
           }
+          
+
           deleteHubConfirm(name){
             confirmAlert({
               title: 'Confirm to delete hub',
@@ -258,17 +262,22 @@ class Home extends React.Component {
            
            this.CreateFile()
         }
+        
 
     render(){
     var VMs = this.state.VMs;
     var Hubs = this.state.Hubs;
     var log = this.state.log;
     var file = this.state.file;
-   
-        
+      console.log(this.props)
+       
             return(
             <div>
+             
+                
                 <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
+                
+
                   <label>name: </label>
                   <input  name="VMname" value={this.state.VMname} onChange={this.handleChange}/>
                   <label>os: </label>
