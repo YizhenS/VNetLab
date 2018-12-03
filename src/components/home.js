@@ -41,8 +41,9 @@ class Home extends React.Component {
             },
             createVm:false,
             log:[],
-            file:this.props.file,
+            file:[],
             data:[],
+            display:[]
            
            
         }
@@ -84,13 +85,7 @@ class Home extends React.Component {
           
         }
 
-          CreateVm(){
-            this.setState({ vm: ++this.state.vm });
-          }
-        
-          CreateHub(){
-            this.setState({ hub: ++this.state.hub });
-          }
+         
         
           
         
@@ -99,6 +94,7 @@ class Home extends React.Component {
           deleteHub(name){
             console.log("working")
             var hub = this.state.Hubs
+            var file  = this.state.file
             for(var i = 0;i < hub.length; i++){
                   console.log(hub[i])
               if(hub[i] === name){
@@ -108,19 +104,28 @@ class Home extends React.Component {
                 console.log(this.state.Hubs)
                
               }
+              if(file[i].includes("hub    :"+name)){
+                file.splice(i,1)
+                this.setState({file: file})
+              }
             };
             this.setState({log:this.state.log.concat(["hub: "+name +"was deleted"])}) 
           }
 
           deleteVm(name){
             var vm = this.state.VMs
-            console.log("delete vm working")
+            var file  = this.state.file
+            console.log(file)
             for(var i = 0;i < vm.length; i++){
               if(vm[i] === name){
                 vm.splice(i,1)
                 
                 this.setState({VMs: vm})
                
+              }
+              if(file[i].includes("vm    :"+name)){
+                file.splice(i,1)
+                this.setState({file: file})
               }
             };
             this.setState({log:this.state.log.concat(["vm: "+name +"was deleted"])})  
@@ -320,7 +325,7 @@ class Home extends React.Component {
          
                 </div>
                 <div className="box" style={{height: '500px', width: '500px'}}>
-                {file.split('\n').map((files,i)=>
+                {file.map((files,i)=>
                   <p key={i}>{files}</p>
         
                   )}
