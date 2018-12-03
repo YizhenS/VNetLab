@@ -43,8 +43,10 @@ class Home extends React.Component {
             log:[],
             file:[],
             data:[],
-            display:[]
-           
+            display:[],
+            vmChange:false,
+            hubChange:false,
+            changeName:""
            
         }
     }
@@ -104,7 +106,7 @@ class Home extends React.Component {
                 console.log(this.state.Hubs)
                
               }
-              if(file[i].includes("hub    :"+name)){
+              if(file[i].includes("Hub    :"+name)){
                 file.splice(i,1)
                 this.setState({file: file})
               }
@@ -190,6 +192,79 @@ class Home extends React.Component {
               })
              }
           }
+          addHub(name,subnet,netmast,hubinterface){
+            console.log("add hub")
+            this.setState({Hubs: this.state.Hubs.concat([name])
+                })
+                Object.keys(data).forEach((key)=>{
+                  if(key === "hub"){
+                    data[key].push({"name":"hub:"+name,"subnet":subnet,"netmask":netmast,"interface":[hubinterface]})
+                  }
+                })
+            this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])})
+            this.setState({file:this.state.file.concat("Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n")})
+            this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})
+            
+          }
+          changeHubConfirm =() =>{
+            if (this.state.HubName === "" && this.state.HubInterface === "" && this.state.HubNetmast === "" && this.state.HubSubnet === "" ){
+              confirmAlert({
+                title:"Hub attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to create Hub',
+                message: 'Are you sure hub name as: ' + this.state.HubName,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => {this.changeHub(this.state.HubName,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface,);this.setState({hubChange:false});this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})}
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+          }
+
+          changeVMConfirm =() =>{
+            if (this.state.VMname === "" && this.state.VMos === "" && this.state.VMsrc === "" && this.state.VMversion === "" && this.state.VMeth === ""){
+              confirmAlert({
+                title:"VM attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to change VM',
+                message: 'Are you sure vm name as: ' + this.state.VMname,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => {this.changeVM(this.state.VMname,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth);this.setState({vmChange:false,VMname:"",VMos:"",VMversion:"",VMsrc:"",VMeth:[]})}
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+          }
 
           
           
@@ -260,10 +335,48 @@ class Home extends React.Component {
               ]
             })
           }
-          changeVM(){
+          change(entity,name){
+            
+            if(entity === "hub"){
+              this.setState({hubChange:true})
+              this.setState({HubName:name,HubSubnet:"",HubNetmast:"",HubInterface:""})
+              this.changeHub(name,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface);
+              
+            }else if(entity === "vm"){
+              this.setState({vmChange:true})
+              this.setState({VMname:name,VMos:"",VMversion:"",VMsrc:"",VMeth:[]})
+              this.changeVM(name,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth);
+            }
+          }
+          changeVM(name,os,version,src,eth){
+            var vm = this.state.VMs
+            var file  = this.state.file
+            for(var i = 0;i < vm.length; i++){
+                  console.log(vm[i])
+              
+              if(file[i].includes("vm    :"+name)){
+                file[i] = "vm    :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n"
+              }
+            };
+            this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])}) 
 
           }
-          componentDidMount() {
+          changeHub(name,subnet,netmast,hubinterface){
+          
+            var hub = this.state.Hubs
+            var file  = this.state.file
+            for(var i = 0;i < hub.length; i++){
+                  console.log(hub[i])
+              
+              if(file[i].includes("Hub    :"+name)){
+                file[i] = "Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n"
+              }
+            };
+            this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])}) 
+            
+          }
+
+        componentDidMount() {
            
            this.CreateFile()
         }
@@ -274,8 +387,8 @@ class Home extends React.Component {
     var Hubs = this.state.Hubs;
     var log = this.state.log;
     var file = this.state.file;
-      console.log(this.props)
-       
+
+            if(this.state.hubChange === false&& this.state.vmChange === false){
             return(
             <div>
              
@@ -312,13 +425,13 @@ class Home extends React.Component {
                 
                   {VMs.map(vmname =>{
                     return (
-                     <Draggable bounds="parent"><div className="box"><p key={vmname}>{vmname}</p><button onClick={() => this.changeVM(vmname)}>Change</button><br/><button onClick={() => this.deleteVMConfirm(vmname)}>delete vm</button></div></Draggable>
+                     <Draggable bounds="parent"><div className="box"><p key={vmname}>{vmname}</p><button onClick={() => this.change("vm",vmname)}>Change</button><br/><button onClick={() => this.deleteVMConfirm(vmname)}>delete vm</button></div></Draggable>
                     );
                   })}
 
                   {Hubs.map(hubname =>{
                     return (
-                     <Draggable bounds="parent"><div className="box"><p key={hubname}>{hubname}</p><button onClick={() => this.deleteHubConfirm(hubname)}>delete hub</button></div></Draggable>
+                     <Draggable bounds="parent"><div className="box"><p key={hubname}>{hubname}</p><button onClick={() => this.change("hub",hubname)}>Change</button><button onClick={() => this.deleteHubConfirm(hubname)}>delete hub</button></div></Draggable>
                     );
                   })}
                   
@@ -345,6 +458,47 @@ class Home extends React.Component {
               
         
         );
+                  }else if(this.state.vmChange === true){
+                    return(
+                      <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
+                
+
+                  <label>name: </label>
+                  <input  name="VMname" value={this.state.VMname} onChange={this.handleChange}/>
+                  <label>os: </label>
+                  <input  name="VMos" value={this.state.VMos} onChange={this.handleChange}/>
+                  <label>version: </label>
+                  <input  name="VMversion" value={this.state.VMversion} onChange={this.handleChange}/>
+                  <label>src: </label>
+                  <input  name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}/>
+                  <label>eth: </label>
+                  <input  name="VMeth" value={this.state.VMeth} onChange={this.handleChange}/>
+                  <button onClick={()=>this.changeVMConfirm()}>change this hub</button>
+                  <button onClick={()=>{this.setState({vmChange:false})}}>Cancel</button>
+                  <br/>
+                  
+              </div>
+                    )
+                  }else if(this.state.hubChange === true){
+                    return(
+                      <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
+                
+
+                  <label>name: </label>
+                  <input name="HubName" value={this.state.HubName} onChange={this.handleChange}></input>
+                  <label>subnet: </label>
+                  <input name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></input>
+                  <label>netmask: </label>
+                  <input name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></input>
+                  <label>Interface: </label>
+                  <input name="HubInterface" value={this.state.HubInterface} onChange={this.handleChange}></input>
+                  <button onClick={()=>this.changeHubConfirm()}>change this hub</button>
+                  <button onClick={()=>{this.setState({hubChange:false})}}>Cancel</button>
+            
+                  
+              </div>
+                    )
+                  }
     
 }
 
