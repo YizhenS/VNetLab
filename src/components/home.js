@@ -6,6 +6,8 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import StayScrolled from 'react-stay-scrolled';
 import {saveAs,FileSaver} from 'file-saver';
+import { Button } from 'reactstrap';
+import { InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
 import "../styles/Main.css"
 
 import { readFile, read } from "fs";
@@ -62,13 +64,13 @@ class Home extends React.Component {
           console.log("add vm")
           this.setState({VMs: this.state.VMs.concat([name])
           })
-          this.setState({log:this.state.log.concat(["vm: "+name +"was created"])})
+          this.setState({log:this.state.log.concat(["VM: "+name +" was created"])})
           Object.keys(data).forEach((key)=>{
             if(key === "vm"){
               data[key].push({"name":"VM:"+name,"os":os,"version":version,"src":src,"eth":eth})
             }
           })
-          this.setState({file:this.state.file.concat("vm    :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n")})
+          this.setState({file:this.state.file.concat("VM  :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n")})
           this.setState({VMname:"",VMos:"",VMversion:"",VMsrc:"",VMeth:[]})
         }
         
@@ -88,11 +90,6 @@ class Home extends React.Component {
         }
 
          
-        
-          
-        
-          
-
           deleteHub(name){
             console.log("working")
             var hub = this.state.Hubs
@@ -201,8 +198,8 @@ class Home extends React.Component {
                     data[key].push({"name":"hub:"+name,"subnet":subnet,"netmask":netmast,"interface":[hubinterface]})
                   }
                 })
-            this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])})
-            this.setState({file:this.state.file.concat("Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n")})
+            this.setState({log:this.state.log.concat(["Hub: "+name +" was changed"])})
+            this.setState({file:this.state.file.concat("Hub    :"+name +" {\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n")})
             this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})
             
           }
@@ -391,68 +388,128 @@ class Home extends React.Component {
             if(this.state.hubChange === false&& this.state.vmChange === false){
             return(
             <div>
-             
-                
-                <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
-                
+  
+                <div className="box" style={{width: '500px', position: 'relative', overflow: 'auto',padding: '0'}} >
+                <h2>Create Hubs and VMs:</h2>
+                <br/>
+                <br/>
+                <div className="inner">
+                  <div className="group1">
+                    <div className="row">
+                      <InputGroup>
+                        <InputGroupAddon addonType="prepend">Name: </InputGroupAddon>
+                        <Input name="VMname" value={this.state.VMname} onChange={this.handleChange}></Input>
+                      </InputGroup>
 
-                  <label>name: </label>
-                  <input  name="VMname" value={this.state.VMname} onChange={this.handleChange}/>
-                  <label>os: </label>
-                  <input  name="VMos" value={this.state.VMos} onChange={this.handleChange}/>
-                  <label>version: </label>
-                  <input  name="VMversion" value={this.state.VMversion} onChange={this.handleChange}/>
-                  <label>src: </label>
-                  <input  name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}/>
-                  <label>eth: </label>
-                  <input  name="VMeth" value={this.state.VMeth} onChange={this.handleChange}/>
-                  <button onClick={()=> this.createVMConfirm()}>create new vm</button>
+                      <InputGroup>
+                        <InputGroupAddon addonType="prepend">OS: </InputGroupAddon>
+                        <Input  name="VMos" value={this.state.VMos} onChange={this.handleChange}></Input>
+                      </InputGroup>
+                    </div>
+                    <div className="row">
+                      <InputGroup>
+                        <InputGroupAddon addonType="prepend">Version: </InputGroupAddon>
+                        <Input name="VMversion" value={this.state.VMversion} onChange={this.handleChange}></Input>
+                      </InputGroup>
+
+                      <InputGroup>
+                        <InputGroupAddon addonType="prepend">SRC: </InputGroupAddon>
+                        <Input name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}></Input>
+                      </InputGroup>
+                    </div>
+
+                    <div className="row">
+                      <InputGroup>
+                        <InputGroupAddon addonType="prepend">ETH: </InputGroupAddon>
+                        <Input name="VMeth" value={this.state.VMeth} onChange={this.handleChange}></Input>
+                      </InputGroup>
+                    </div>
+                    <br/>
+                    <Button onClick={()=> this.createVMConfirm()}>create new vm</Button>
+                  </div>
+
+                  <div className="group2">
+                    <InputGroup>
+                          <InputGroupAddon addonType="prepend">Name: </InputGroupAddon>
+                          <Input name="HubName" value={this.state.HubName} onChange={this.handleChange}></Input>
+                    </InputGroup>
+
+                    <InputGroup>
+                          <InputGroupAddon addonType="prepend">Subnet: </InputGroupAddon>
+                          <Input name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></Input>
+                    </InputGroup>
+
+                    <InputGroup>
+                          <InputGroupAddon addonType="prepend">Netmask: </InputGroupAddon>
+                          <Input  name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></Input>
+                    </InputGroup>
+
+                    <InputGroup>
+                          <InputGroupAddon addonType="prepend">Interface: </InputGroupAddon>
+                          <Input  name="HubInterface" value={this.state.HubInterface} onChange={this.handleChange}></Input>
+                    </InputGroup>
                   <br/>
-                  <label>name: </label>
-                  <input name="HubName" value={this.state.HubName} onChange={this.handleChange}></input>
-                  <label>subnet: </label>
-                  <input name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></input>
-                  <label>netmask: </label>
-                  <input name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></input>
-                  <label>Interface: </label>
-                  <input name="HubInterface" value={this.state.HubInterface} onChange={this.handleChange}></input>
-                  <button onClick={()=>this.createHubConfirm()}>create new hub</button>
+                    <Button onClick={()=>this.createHubConfirm()}>Create New Hub</Button>
+                  </div>
+                </div>
+                <br/>
+                <br/>
                   <br/>
-                  <button onClick={()=> this.saveFileConfirm()}>Save file</button>
+                  <Button color="success" onClick={()=> this.saveFileConfirm()}>Save file</Button>
+                  
               </div>
-                <div className="box" style={{height: '500px', width: '500px', position: 'relative', overflow: 'auto',padding: '0'}}>
-                
+              
+
+
+                <div className="box" style={{height: '500px', width: '1000px', position: 'relative', overflow: 'auto',padding: '0'}}>
+                <h6>Workspace:</h6>
                 
                   {VMs.map(vmname =>{
                     return (
-                     <Draggable bounds="parent"><div className="box"><p key={vmname}>{vmname}</p><button onClick={() => this.change("vm",vmname)}>Change</button><br/><button onClick={() => this.deleteVMConfirm(vmname)}>delete vm</button></div></Draggable>
+                     <Draggable bounds="parent">
+                      <div className="box" style={{width: '150px', height: 'auto',backgroundColor: '#e8f0ff'}} >
+                        <p key={vmname}> <b>VM:</b> {vmname}</p>
+                        <Button color="primary" onClick={() => this.change("vm",vmname)}>Change</Button><br/>
+                        <Button color="secondary">Connect</Button>
+                        <br/>
+                        <Button color="danger" onClick={() => this.deleteVMConfirm(vmname)}>Delete</Button>
+                        </div>
+                     </Draggable>
                     );
                   })}
 
                   {Hubs.map(hubname =>{
                     return (
-                     <Draggable bounds="parent"><div className="box"><p key={hubname}>{hubname}</p><button onClick={() => this.change("hub",hubname)}>Change</button><button onClick={() => this.deleteHubConfirm(hubname)}>delete hub</button></div></Draggable>
+                     <Draggable bounds="parent">
+                      <div className="box" style={{width: '150px',height: 'auto', backgroundColor: '#e8fdff'}}>
+                      <p key={hubname}><b>Hub:</b> {hubname}</p>
+                      <Button color="primary" onClick={() => this.change("hub",hubname)}>Change</Button>
+                      <Button color="secondary">Connect</Button><br/>
+                      
+                      <Button color="danger" onClick={() => this.deleteHubConfirm(hubname)}>Delete</Button>
+                      </div>
+                     </Draggable>
                     );
                   })}
                   
          
                 </div>
                 <div className="box" style={{height: '500px', width: '500px'}}>
+                <h6>Information:</h6>
+
                 {file.map((files,i)=>
                   <p key={i}>{files}</p>
         
                   )}
                 </div>  
        
-                 <div className="box" style={{height:"100px",width:"1000px" }}>
+                 <div className="box" style={{height:"500px",width:"1000px" }}>
+                  <h6>History:</h6>
                   {log.map((lines)=>
                   <div><p>{lines}</p>
                         </div>
                     )}
-                    </div>
-                  
-                    
-                    
+                    </div>                  
             
         </div>
               
@@ -460,40 +517,65 @@ class Home extends React.Component {
         );
                   }else if(this.state.vmChange === true){
                     return(
-                      <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
+                      <div className="box" style={{ width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
                 
+                <InputGroup>
+                          <InputGroupAddon addonType="prepend">Name: </InputGroupAddon>
+                          <Input name="VMname" value={this.state.VMname} onChange={this.handleChange}></Input>
+                </InputGroup>
+                <InputGroup>
+                        <InputGroupAddon addonType="prepend">OS: </InputGroupAddon>
+                        <Input  name="VMos" value={this.state.VMos} onChange={this.handleChange}></Input>
+                </InputGroup>
+                <InputGroup>
+                        <InputGroupAddon addonType="prepend">Version:  </InputGroupAddon>
+                        <Input  name="VMversion" value={this.state.VMversion} onChange={this.handleChange}></Input>
+                </InputGroup>
 
-                  <label>name: </label>
-                  <input  name="VMname" value={this.state.VMname} onChange={this.handleChange}/>
-                  <label>os: </label>
-                  <input  name="VMos" value={this.state.VMos} onChange={this.handleChange}/>
-                  <label>version: </label>
-                  <input  name="VMversion" value={this.state.VMversion} onChange={this.handleChange}/>
-                  <label>src: </label>
-                  <input  name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}/>
-                  <label>eth: </label>
-                  <input  name="VMeth" value={this.state.VMeth} onChange={this.handleChange}/>
-                  <button onClick={()=>this.changeVMConfirm()}>change this hub</button>
-                  <button onClick={()=>{this.setState({vmChange:false})}}>Cancel</button>
+                <InputGroup>
+                        <InputGroupAddon addonType="prepend">SRC: </InputGroupAddon>
+                        <Input name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}></Input>
+                      </InputGroup>
+                      <InputGroup>
+                        <InputGroupAddon addonType="prepend">ETH: </InputGroupAddon>
+                        <Input name="VMeth" value={this.state.VMeth} onChange={this.handleChange}></Input>
+                      </InputGroup>
+                      <br/>
+                    <br/>
+                  <Button onClick={()=>this.changeVMConfirm()}>Change Hub</Button>
+                  <Button color="danger" onClick={()=>{this.setState({vmChange:false})}}>Cancel</Button>
                   <br/>
                   
               </div>
                     )
                   }else if(this.state.hubChange === true){
                     return(
-                      <div className="box" style={{height: '100px', width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
+                      <div className="box" style={{ width: '1000px', position: 'relative', overflow: 'auto', padding: '0',border: "1px solid #999"}}>
                 
+                <InputGroup>
+                          <InputGroupAddon addonType="prepend">Name: </InputGroupAddon>
+                          <Input name="HubName" value={this.state.HubName} onChange={this.handleChange}></Input>
+                    </InputGroup>
 
-                  <label>name: </label>
-                  <input name="HubName" value={this.state.HubName} onChange={this.handleChange}></input>
-                  <label>subnet: </label>
-                  <input name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></input>
-                  <label>netmask: </label>
-                  <input name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></input>
-                  <label>Interface: </label>
-                  <input name="HubInterface" value={this.state.HubInterface} onChange={this.handleChange}></input>
-                  <button onClick={()=>this.changeHubConfirm()}>change this hub</button>
-                  <button onClick={()=>{this.setState({hubChange:false})}}>Cancel</button>
+                    <InputGroup>
+                          <InputGroupAddon addonType="prepend">Subnet: </InputGroupAddon>
+                          <Input name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></Input>
+                    </InputGroup>
+
+                    <InputGroup>
+                          <InputGroupAddon addonType="prepend">Netmask: </InputGroupAddon>
+                          <Input  name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></Input>
+                    </InputGroup>
+
+                    <InputGroup>
+                          <InputGroupAddon addonType="prepend">Interface: </InputGroupAddon>
+                          <Input  name="HubInterface" value={this.state.HubInterface} onChange={this.handleChange}></Input>
+                    </InputGroup>
+                    <br/>
+                    <br/>
+
+                  <Button onClick={()=>this.changeHubConfirm()}>Change Hub</Button>
+                  <Button color="danger" onClick={()=>{this.setState({hubChange:false})}}>Cancel</Button>
             
                   
               </div>
