@@ -15,7 +15,7 @@ import { readFile, read } from "fs";
 
 class Home extends React.Component {
 
-    constructor(props) {
+    constructor(props){
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.addVm = this.addVm.bind(this);
@@ -33,7 +33,7 @@ class Home extends React.Component {
             HubName:"",
             HubSubnet:"",
             HubNetmast:"",
-            HubInterface:[],
+            HubInterface:"",
             FileName:this.props.id,
             isFile:false,
             VMs:[],
@@ -63,360 +63,372 @@ class Home extends React.Component {
            
         }
     }
-
-    /* handle updating state on change event for form fields */
     handleChange(event) {
         this.setState({[event.target.name]: event.target.value});
-    }
-
-    /* upload input file to re-create an existing configuration */
-    upload() {
-      this.setState({file:this.state.file.concat(this.props.file)});
-    }
-
-    /* update state when a virtual machine's position changes */
-    handleDragVM(e,ui) {
-      
-      const {x, y} = this.state.deltaPositionVM;
-      
-      this.setState({
-        deltaPositionVM: {
-          x: x + ui.deltaX,
-          y: y + ui.deltaY,
-        }
-      });
-    }
-
-    /* update state when a hub's position changes */
-    handleDragHub(e,ui) {
-      
-      const {x, y} = this.state.deltaPositionHub;
-      
-      this.setState({
-        deltaPositionHub: {
-          x: x + ui.deltaX,
-          y: y + ui.deltaY,
-        }
-      });
-    }
-
-    /* create a new configuration file */
-    CreateFile() {
-      data["name"]=this.props.id;
-      this.setState({isFile:true});
-    }
-
-    /* add a virtual machine to the configuration */
-    addVm(name, os, version, src, eth) {
-
-      this.setState({VMs: this.state.VMs.concat([name]) });
-      this.setState({log:this.state.log.concat(["VM: "+name +" was created"]) });
-      Object.keys(data).forEach( (key) => {
-        if(key === "vm"){
-          data[key].push({"name":"VM:"+name,"os":os,"version":version,"src":src,"eth":eth})
-        }
-      });
-
-      this.setState({file:this.state.file.concat("VM  :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n") });
-      this.setState({VMname:"",VMos:"",VMversion:"",VMsrc:"",VMeth:[]});
-    }
-
-    /* add a hub to the configuration */
-    addHub(name, subnet, netmast, hubinterface) {
-      this.setState({ Hubs: this.state.Hubs.concat([name]) })
-      
-      Object.keys(data).forEach( (key) => {
-        if(key === "hub"){
-          data[key].push({"name":"hub:"+name,"subnet":subnet,"netmask":netmast,"interface":[hubinterface]})
-        }
-      });
-
-      this.setState({ log:this.state.log.concat(["hub: "+name +"was created"]) });
-      this.setState({ file:this.state.file.concat("Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n") });
-      this.setState({ HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:"" });
-      
-    }
-
-    /* delete a hub from the configuration */
-    deleteHub(name) {
-      var hub = this.state.Hubs;
-      var file  = this.state.file;
-
-      for(var i = 0;i < hub.length; i++) {
-        if(hub[i] === name) {
-          hub.splice(i,1);
-          this.setState({Hubs: hub});
-        }
-        if(file[i].includes("Hub    :"+name)) {
-          file.splice(i,1);
-          this.setState({file: file});
-        }
       }
-      this.setState({log:this.state.log.concat(["hub: "+name +"was deleted"])}) 
-    }
-
-    /* delete a vm from the configuration */
-    deleteVm(name) {
-      var vm = this.state.VMs;
-      var file  = this.state.file;
-      for(var i = 0;i < vm.length; i++) {
-        if(vm[i] === name) {
-          vm.splice(i,1);
-          this.setState({VMs: vm});
-        }
-        if(file[i].includes("vm    :"+name)) {
-          file.splice(i,1);
-          this.setState({file: file});
-        }
+      upload(){
+        this.setState({file:this.state.file.concat(this.props.file)});
       }
-      this.setState({ log:this.state.log.concat(["vm: "+name +"was deleted"]) });
-    }
-
-    /* open confirmation dialog for creating a virtual machine */
-    createVMConfirm = () => {
-      if (this.state.VMname === "" && this.state.VMos === "" && this.state.VMsrc === "" && this.state.VMversion === "" && this.state.VMeth === ""){
-        confirmAlert({
-          title:"VM attribute missing",
-          message: "You are missing something",
-          buttons: [{ label: 'ok' }]
+      handleDragVM(e,ui) {
+        
+        const {x, y} = this.state.deltaPositionVM;
+        
+        this.setState({
+          deltaPositionVM: {
+            x: x + ui.deltaX,
+            y: y + ui.deltaY,
+          }
         });
-      } else {
-        confirmAlert({
-          title: 'Confirm to create VM',
-          message: 'Are you sure vm name as: ' + this.state.VMname,
-          buttons: [
-            {
-              label: 'Yes',
-              onClick: () => this.addVm(this.state.VMname,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth)
-            },
-            {
-              label: 'No',
-              onClick: () => alert('Create vm canceled')
+        
+      }
+      handleDragHub(e,ui) {
+        
+        const {x, y} = this.state.deltaPositionHub;
+        
+        this.setState({
+          deltaPositionHub: {
+            x: x + ui.deltaX,
+            y: y + ui.deltaY,
+          }
+        });
+       
+      }
+      addPostion(name){
+        console.log("working")
+      }
+        CreateFile(){
+          data["name"]=this.props.id
+          console.log(data)
+          this.setState({isFile:true})
+        }
+        addVm(name,os,version,src,eth){
+          console.log("add vm")
+          this.setState({VMs: this.state.VMs.concat([name])
+          })
+          this.setState({log:this.state.log.concat(["VM: "+name +" was created"])})
+          Object.keys(data).forEach((key)=>{
+            if(key === "vm"){
+              data[key].push({"name":"VM:"+name,"os":os,"version":version,"src":src,"eth":eth})
             }
-          ]
-        });
-      }
-    }
-    
-    /* open confirmation dialog for creating a hub */
-    createHubConfirm = () => {
-      if (this.state.HubName === "" && this.state.HubInterface === "" && this.state.HubNetmast === "" && this.state.HubSubnet === "" ){
-        confirmAlert({
-          title:"Hub attribute missing",
-          message: "You are missing something",
-          buttons: [{ label: 'ok' }]
-        });
-      } else {
-        confirmAlert({
-          title: 'Confirm to create Hub',
-          message: 'Are you sure hub name as: ' + this.state.HubName,
-          buttons: [
-            {
-              label: 'Yes',
-              onClick: () => this.addHub(this.state.HubName,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface)
-            },
-            {
-              label: 'No',
-              onClick: () => alert('Create vm canceled')
-            }
-          ]
-        });
-      }
-    }
-
-    /* add a hub to the configuration */
-    addHub(name, subnet, netmast, hubinterface) {
-      this.setState({Hubs: this.state.Hubs.concat([name]) });
-      
-      Object.keys(data).forEach( (key) => {
-        if(key === "hub") {
-          data[key].push({"name":"hub:"+name,"subnet":subnet,"netmask":netmast,"interface":[hubinterface]})
+          })
+          this.setState({file:this.state.file.concat("VM  :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n")})
+          this.setState({VMname:"",VMos:"",VMversion:"",VMsrc:"",VMeth:[]})
         }
-      });
+        
+        addHub(name,subnet,netmast,hubinterface){
+          console.log("add hub")
+          this.setState({Hubs: this.state.Hubs.concat([name])
+              })
+              Object.keys(data).forEach((key)=>{
+                if(key === "hub"){
+                  data[key].push({"name":"hub:"+name,"subnet":subnet,"netmask":netmast,"interface":hubinterface.split(";")})
+                }
+              })
+          this.setState({log:this.state.log.concat(["hub: "+name +"was created"])})
+          this.setState({file:this.state.file.concat("Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n")})
+          this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})
+          
+        }
 
-      this.setState({log:this.state.log.concat(["Hub: "+name +" was changed"])});
-      this.setState({file:this.state.file.concat("Hub    :"+name +" {\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n")});
-      this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""});
-      
-    }
+         
+          deleteHub(name){
+            console.log("working")
+            var hub = this.state.Hubs
+            var file  = this.state.file
+            for(var i = 0;i < hub.length; i++){
+                  console.log(hub[i])
+              if(hub[i] === name){
+                hub.splice(i,1)
+                
+                this.setState({Hubs: hub})
+                console.log(this.state.Hubs)
+               
+              }
+              if(file[i].includes("Hub    :"+name)){
+                file.splice(i,1)
+                this.setState({file: file})
+              }
+            };
+            this.setState({log:this.state.log.concat(["hub: "+name +"was deleted"])}) 
+          }
 
-    /* open confirmation dialog for updating a hub */
-    changeHubConfirm = () => {
-      if (this.state.HubName === "" && this.state.HubInterface === "" && this.state.HubNetmast === "" && this.state.HubSubnet === "" ){
-        confirmAlert({
-          title:"Hub attribute missing",
-          message: "You are missing something",
-          buttons:[{ label:'ok' }]
-        });
-      } else {
-        confirmAlert({
-          title: 'Confirm to create Hub',
-          message: 'Are you sure hub name as: ' + this.state.HubName,
-          buttons: [
-            {
-              label: 'Yes',
-              onClick: () => {this.changeHub(this.state.HubName,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface,);this.setState({hubChange:false});this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})}
-            },
-            {
-              label: 'No',
-              onClick: () => alert('Create vm canceled')
-            }
-          ]
-        });
-      }
-    }
+          deleteVm(name){
+            var vm = this.state.VMs
+            var file  = this.state.file
+            console.log(file)
+            for(var i = 0;i < vm.length; i++){
+              if(vm[i] === name){
+                vm.splice(i,1)
+                
+                this.setState({VMs: vm})
+               
+              }
+              if(file[i].includes("vm    :"+name)){
+                file.splice(i,1)
+                this.setState({file: file})
+              }
+            };
+            this.setState({log:this.state.log.concat(["vm: "+name +"was deleted"])})  
+          }
 
-    /* open confirmation dialog for updating a virtual machine */
-    changeVMConfirm = () => {
-      if (this.state.VMname === "" && this.state.VMos === "" && this.state.VMsrc === "" && this.state.VMversion === "" && this.state.VMeth === ""){
-        confirmAlert({
-          title:"VM attribute missing",
-          message: "You are missing something",
-          buttons:[{ label: 'ok' }]
-        });
-      } else {
-        confirmAlert({
-          title: 'Confirm to change VM',
-          message: 'Are you sure vm name as: ' + this.state.VMname,
-          buttons: [
-            {
-              label: 'Yes',
-              onClick: () => {this.changeVM(this.state.VMname,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth);this.setState({vmChange:false,VMname:"",VMos:"",VMversion:"",VMsrc:"",VMeth:[]})}
-            },
-            {
-              label: 'No',
-              onClick: () => alert('Create vm canceled')
-            }
-          ]
-        });
-      }
-    }
+          createVMConfirm =() =>{
+            if (this.state.VMname === "" || this.state.VMos === "" || this.state.VMsrc === "" || this.state.VMversion === "" || this.state.VMeth === ""){
+              confirmAlert({
+                title:"VM attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to create VM',
+                message: 'Are you sure vm name as: ' + this.state.VMname,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => this.addVm(this.state.VMname,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth)
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+          }
+          
+          createHubConfirm =() =>{
+            if (this.state.HubName === "" || this.state.HubInterface === "" || this.state.HubNetmast === "" || this.state.HubSubnet === "" ){
+              confirmAlert({
+                title:"Hub attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to create Hub',
+                message: 'Are you sure hub name as: ' + this.state.HubName,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => this.addHub(this.state.HubName,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface)
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+          }
+          addHub(name,subnet,netmast,hubinterface){
+            console.log("add hub")
+            this.setState({Hubs: this.state.Hubs.concat([name])
+                })
+                Object.keys(data).forEach((key)=>{
+                  if(key === "hub"){
+                    data[key].push({"name":name,"subnet":subnet,"netmask":netmast,"interface":hubinterface.split(";")})
+                  }
+                })
+            this.setState({log:this.state.log.concat(["Hub: "+name +" was changed"])})
+            this.setState({file:this.state.file.concat("Hub    :"+name +" {\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n interface: \u0022"+hubinterface+"\u0022\n}\n")})
+            this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})
+            
+          }
+          changeHubConfirm =() =>{
+            if (this.state.HubName === "" && this.state.HubInterface === "" && this.state.HubNetmast === "" && this.state.HubSubnet === "" ){
+              confirmAlert({
+                title:"Hub attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to create Hub',
+                message: 'Are you sure hub name as: ' + this.state.HubName,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => {this.changeHub(this.state.HubName,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface,);this.setState({hubChange:false});this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})}
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+          }
+
+          changeVMConfirm =() =>{
+            if (this.state.VMname === "" && this.state.VMos === "" && this.state.VMsrc === "" && this.state.VMversion === "" && this.state.VMeth === ""){
+              confirmAlert({
+                title:"VM attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to change VM',
+                message: 'Are you sure vm name as: ' + this.state.VMname,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => {this.changeVM(this.state.VMname,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth);this.setState({vmChange:false,VMname:"",VMos:"",VMversion:"",VMsrc:"",VMeth:[]})}
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+          }
 
           
-    /* open confirmation dialog for saving the configuration file */
-    saveFileConfirm() {
-      if (this.state.file === "") {
-        confirmAlert({
-          title:" file  missing",
-          message: "No file can be saved",
-          buttons:[{ label: 'ok' }]
-        });
-      } else {
-        confirmAlert({
-          title: 'Confirm to save file',
-          message: 'Are you sure saving file as: ' + this.props.id,
-          buttons: [
-            {
-              label: 'Yes',
-              onClick: () => this.save()
-            },
-            {
-              label: 'No',
-              onClick: () => alert('Create file canceled')
-            }
-          ]
-        });
-      }
-    }
-
-    /* save the configuration */
-    save() {
-      var blob = new Blob([this.state.file], {type: "text/plain;charset=utf-8"});
-      saveAs(blob, this.props.id+".cfg");
-    }
           
-    /* open confirmation dialog for deleting a hub */
-    deleteHubConfirm(name) {
-      confirmAlert({
-        title: 'Confirm to delete hub',
-        message: 'Are you sure deleting this hub: ' + name,
-        buttons: [
-          {
-            label: 'Yes',
-            onClick: () => this.deleteHub(name)
-          },
-          {
-            label: 'No',
-            onClick: () => alert('delete hub canceled')
+          saveFileConfirm(){
+            if (this.state.file === ""){
+              confirmAlert({
+                title:" file  missing",
+                message: "No file can be saved",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+            confirmAlert({
+              title: 'Confirm to save file',
+              message: 'Are you sure saving file as: ' + this.props.id,
+              buttons: [
+                {
+                  label: 'Yes',
+                  onClick: () => this.save()
+                },
+                {
+                  label: 'No',
+                  onClick: () => alert('Create file canceled')
+                }
+              ]
+            })
           }
-        ]
-      });
-    }
-
-    /* open confirmation dialog for deleting a virtual machine */
-    deleteVMConfirm(name) {
-      confirmAlert({
-        title: 'Confirm to delete vm',
-        message: 'Are you sure deleting this vm: ' + name,
-        buttons: [
-          {
-            label: 'Yes',
-            onClick: () => this.deleteVm(name)
-          },
-          {
-            label: 'No',
-            onClick: () => alert('delete vm canceled')
           }
-        ]
-      });
-    }
+          save(){
+            var blob = new Blob([this.state.file], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, this.props.id+".cfg");
+          }
+          
 
-    /* change an entity */
-    change(entity,name) {
-      
-      if(entity === "hub") {
-        this.setState({hubChange:true})
-        this.setState({HubName:name,HubSubnet:"",HubNetmast:"",HubInterface:""})
-        this.changeHub(name,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface);
+          deleteHubConfirm(name){
+            confirmAlert({
+              title: 'Confirm to delete hub',
+              message: 'Are you sure deleting this hub: ' + name,
+              buttons: [
+                {
+                  label: 'Yes',
+                  onClick: () => this.deleteHub(name)
+                },
+                {
+                  label: 'No',
+                  onClick: () => alert('delete hub canceled')
+                }
+              ]
+            })
+          }
+          deleteVMConfirm(name){
+            confirmAlert({
+              title: 'Confirm to delete vm',
+              message: 'Are you sure deleting this vm: ' + name,
+              buttons: [
+                {
+                  label: 'Yes',
+                  onClick: () => this.deleteVm(name)
+                },
+                {
+                  label: 'No',
+                  onClick: () => alert('delete vm canceled')
+                }
+              ]
+            })
+          }
+          change(entity,name){
+            
+            if(entity === "hub"){
+              this.setState({hubChange:true})
+              this.setState({HubName:name,HubSubnet:"",HubNetmast:"",HubInterface:""})
+              this.changeHub(name,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface);
+              
+            }else if(entity === "vm"){
+              this.setState({vmChange:true})
+              this.setState({VMname:name,VMos:"",VMversion:"",VMsrc:"",VMeth:[]})
+              this.changeVM(name,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth);
+            }
+          }
+          changeVM(name,os,version,src,eth){
+            var vm = this.state.VMs
+            var file  = this.state.file
+            for(var i = 0;i < vm.length; i++){
+                  console.log(vm[i])
+              
+              if(file[i].includes("vm    :"+name)){
+                file[i] = "vm    :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n"
+              }
+            };
+            this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])}) 
+
+          }
+          changeHub(name,subnet,netmast,hubinterface){
+          
+            var hub = this.state.Hubs
+            var file  = this.state.file
+            for(var i = 0;i < hub.length; i++){
+                  console.log(hub[i])
+              
+              if(file[i].includes("Hub    :"+name)){
+                file[i] = "Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n"
+              }
+            };
+            this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])}) 
+            
+          }
+
+        componentDidMount() {
+           if(this.props.file){
+             this.upload()
+           }
+           this.CreateFile()
+           
+        }
         
-      }else if(entity === "vm") {
-        this.setState({vmChange:true})
-        this.setState({VMname:name,VMos:"",VMversion:"",VMsrc:"",VMeth:[]})
-        this.changeVM(name,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth);
-      }
-    }
 
-    /* change virtual machine */
-    changeVM(name, os, version, src, eth) {
-      var vm = this.state.VMs
-      var file  = this.state.file
-      for(var i = 0;i < vm.length; i++) {
-        if(file[i].includes("vm    :"+name)){
-          file[i] = "vm    :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n"
-        }
-      };
-      this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])}) 
-
-    }
+    render(){
+    var VMs = this.state.VMs;
+    var Hubs = this.state.Hubs;
+    var log = this.state.log;
+    var file = this.state.file;
     
-    /* change hub */
-    changeHub(name, subnet, netmast, hubinterface) {
-      var hub = this.state.Hubs;
-      var file  = this.state.file;
-      for(var i = 0;i < hub.length; i++) {
-        if(file[i].includes("Hub    :"+name)) {
-          file[i] = "Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n";
-        }
-      }
-      this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])});
-    }
-
-    /* upload a file and create a new configuration file when component is mounted */
-    componentDidMount() {
-        if(this.props.file){
-          this.upload();
-        }
-        this.CreateFile();
-    }
-        
-
-    render() {
-      var VMs = this.state.VMs;
-      var Hubs = this.state.Hubs;
-      var log = this.state.log;
-      var file = this.state.file;
-    
-
             if(this.state.hubChange === false&& this.state.vmChange === false){
             return(
             <div>
@@ -502,12 +514,12 @@ class Home extends React.Component {
                     return (
                      
                      <Draggable bounds="parent" onDrag={this.handleDragVM}  >
-                      <div className={vmname} style={{width: '150px', height: 'auto',backgroundColor: '#e8f0ff'}} >
+                      <div className={"vm"+vmname} style={{width: '150px', height: 'auto',backgroundColor: '#e8f0ff'}} >
                         <p key={vmname}> <b>VM:</b> {vmname}</p>
                         
                         <Button color="primary" onClick={() => this.change("vm",vmname)}>Change</Button><br/>
-                        <Button color="secondary">Connect</Button>
-                        <br/>
+                    
+                       
                         <Button color="danger" onClick={() => this.deleteVMConfirm(vmname)}>Delete</Button>
                         </div>
                      </Draggable>
@@ -518,17 +530,39 @@ class Home extends React.Component {
                   {Hubs.map(hubname =>{
                     return (
                      <Draggable bounds="parent" onDrag={this.handleDragHub}>
-                      <div className={hubname} style={{width: '150px',height: 'auto', backgroundColor: '#e8fdff'}}>
+                      <div className={"hub"+hubname} style={{width: '150px',height: 'auto', backgroundColor: '#e8fdff'}}>
                       <p key={hubname}><b>Hub:</b> {hubname}</p>
                       <Button color="primary" onClick={() => this.change("hub",hubname)}>Change</Button>
-                      <Button color="secondary">Connect</Button><br/>
+                      
                       
                       <Button color="danger" onClick={() => this.deleteHubConfirm(hubname)}>Delete</Button>
                       </div>
                      </Draggable>
                     );
                   })}
-                  <LineTo from={"vm1"} to={"hub1"}/>
+                  {Object.keys(data["hub"]).map((i)=>{
+                    var hubname = data["hub"][i]["name"]
+                    return(
+                      Object.keys(data["hub"][i]["interface"]).map(a=>{
+                      var vmname = data["hub"][i]["interface"][a]
+                      console.log(vmname)
+                      return(
+                        <div>
+                          
+                          <LineTo from={"vm"+vmname} to={"hub"+hubname}/>
+                          <p>working</p>
+                        </div>
+                      )
+                    }))
+                    
+                    
+                    
+                   
+                  })}
+
+                 
+                  
+                 
                   
          
                 </div>
