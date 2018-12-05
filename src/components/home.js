@@ -63,12 +63,15 @@ class Home extends React.Component {
            
         }
     }
+    /* handle updating state on change event for form fields */
     handleChange(event) {
         this.setState({[event.target.name]: event.target.value});
       }
+       /* upload input file to re-create an existing configuration */
       upload(){
         this.setState({file:this.state.file.concat(this.props.file)});
       }
+      /* update state when a virtual machine's position changes */
       handleDragVM(e,ui) {
         
         const {x, y} = this.state.deltaPositionVM;
@@ -81,6 +84,7 @@ class Home extends React.Component {
         });
         
       }
+      /* update state when a hub's position changes */
       handleDragHub(e,ui) {
         
         const {x, y} = this.state.deltaPositionHub;
@@ -93,6 +97,7 @@ class Home extends React.Component {
         });
        
       }
+      /* create a new configuration file */
       addPostion(name){
         console.log("working")
       }
@@ -101,6 +106,7 @@ class Home extends React.Component {
           console.log(data)
           this.setState({isFile:true})
         }
+        /* add a virtual machine to the configuration */
         addVm(name,os,version,src,eth){
           console.log("add vm")
           this.setState({VMs: this.state.VMs.concat([name])
@@ -114,7 +120,7 @@ class Home extends React.Component {
           this.setState({file:this.state.file.concat("VM  :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n")})
           this.setState({VMname:"",VMos:"",VMversion:"",VMsrc:"",VMeth:[]})
         }
-        
+        /* add a hub to the configuration */
         addHub(name,subnet,netmast,hubinterface){
           console.log("add hub")
           this.setState({Hubs: this.state.Hubs.concat([name])
@@ -130,13 +136,13 @@ class Home extends React.Component {
           
         }
 
-         
+          /* delete a hub from the configuration */
           deleteHub(name){
             console.log("working")
             var hub = this.state.Hubs
             var file  = this.state.file
             for(var i = 0;i < hub.length; i++){
-                  console.log(hub[i])
+                  console.log(file)
               if(hub[i] === name){
                 hub.splice(i,1)
                 
@@ -149,9 +155,9 @@ class Home extends React.Component {
                 this.setState({file: file})
               }
             };
-            this.setState({log:this.state.log.concat(["hub: "+name +"was deleted"])}) 
+            this.setState({log:this.state.log.concat(["Hub    :"+name +"was deleted"])}) 
           }
-
+  /* delete a vm from the configuration */
           deleteVm(name){
             var vm = this.state.VMs
             var file  = this.state.file
@@ -163,14 +169,14 @@ class Home extends React.Component {
                 this.setState({VMs: vm})
                
               }
-              if(file[i].includes("vm    :"+name)){
+              if(file[i].includes("VM  :"+name)){
                 file.splice(i,1)
                 this.setState({file: file})
               }
             };
             this.setState({log:this.state.log.concat(["vm: "+name +"was deleted"])})  
           }
-
+ /* open confirmation dialog for creating a virtual machine */
           createVMConfirm =() =>{
             if (this.state.VMname === "" || this.state.VMos === "" || this.state.VMsrc === "" || this.state.VMversion === "" || this.state.VMeth === ""){
               confirmAlert({
@@ -200,7 +206,7 @@ class Home extends React.Component {
               })
              }
           }
-          
+          /* open confirmation dialog for creating a hub */
           createHubConfirm =() =>{
             if (this.state.HubName === "" || this.state.HubInterface === "" || this.state.HubNetmast === "" || this.state.HubSubnet === "" ){
               confirmAlert({
@@ -230,6 +236,8 @@ class Home extends React.Component {
               })
              }
           }
+          
+           /* add a hub to the configuration */
           addHub(name,subnet,netmast,hubinterface){
             console.log("add hub")
             this.setState({Hubs: this.state.Hubs.concat([name])
@@ -244,6 +252,7 @@ class Home extends React.Component {
             this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})
             
           }
+          /* open confirmation dialog for updating a hub */
           changeHubConfirm =() =>{
             if (this.state.HubName === "" && this.state.HubInterface === "" && this.state.HubNetmast === "" && this.state.HubSubnet === "" ){
               confirmAlert({
@@ -273,7 +282,7 @@ class Home extends React.Component {
               })
              }
           }
-
+            /* open confirmation dialog for updating a virtual machine */
           changeVMConfirm =() =>{
             if (this.state.VMname === "" && this.state.VMos === "" && this.state.VMsrc === "" && this.state.VMversion === "" && this.state.VMeth === ""){
               confirmAlert({
@@ -305,7 +314,7 @@ class Home extends React.Component {
           }
 
           
-          
+          /* open confirmation dialog for saving the configuration file */
           saveFileConfirm(){
             if (this.state.file === ""){
               confirmAlert({
@@ -335,12 +344,13 @@ class Home extends React.Component {
             })
           }
           }
+          /* save the configuration */
           save(){
             var blob = new Blob([this.state.file], {type: "text/plain;charset=utf-8"});
             saveAs(blob, this.props.id+".cfg");
           }
           
-
+           /* open confirmation dialog for deleting a hub */
           deleteHubConfirm(name){
             confirmAlert({
               title: 'Confirm to delete hub',
@@ -357,6 +367,7 @@ class Home extends React.Component {
               ]
             })
           }
+          /* open confirmation dialog for deleting a virtual machine */
           deleteVMConfirm(name){
             confirmAlert({
               title: 'Confirm to delete vm',
@@ -373,6 +384,7 @@ class Home extends React.Component {
               ]
             })
           }
+          /* change an entity */
           change(entity,name){
             
             if(entity === "hub"){
@@ -386,6 +398,7 @@ class Home extends React.Component {
               this.changeVM(name,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth);
             }
           }
+          /* change virtual machine */
           changeVM(name,os,version,src,eth){
             var vm = this.state.VMs
             var file  = this.state.file
@@ -396,9 +409,10 @@ class Home extends React.Component {
                 file[i] = "vm    :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n"
               }
             };
-            this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])}) 
+           
 
           }
+           /* change hub */
           changeHub(name,subnet,netmast,hubinterface){
           
             var hub = this.state.Hubs
@@ -410,7 +424,7 @@ class Home extends React.Component {
                 file[i] = "Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n"
               }
             };
-            this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])}) 
+           
             
           }
 
@@ -550,7 +564,7 @@ class Home extends React.Component {
                         <div>
                           
                           <LineTo from={"vm"+vmname} to={"hub"+hubname}/>
-                          <p>working</p>
+                          
                         </div>
                       )
                     }))
