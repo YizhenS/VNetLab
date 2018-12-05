@@ -12,6 +12,34 @@
      padding: '0';
      border: "1px solid #999";
   }
+  .vm {
+    background: #fff;
+    border: 1px solid #999;
+    border-radius: 3px;
+    width: 1000px;
+    height:500px;
+    margin: 10px;
+    padding: 10px;
+    float: left;
+
+    overflow: 'auto';
+     padding: '0';
+     border: "1px solid #999";
+  }
+  .hub {
+    background: #fff;
+    border: 1px solid #999;
+    border-radius: 3px;
+    width: 1000px;
+    height:500px;
+    margin: 10px;
+    padding: 10px;
+    float: left;
+
+    overflow: 'auto';
+     padding: '0';
+     border: "1px solid #999";
+  }
 
   .inner{
     display: flex;
@@ -25,9 +53,9 @@
   }
 
   .group1{
-    max-width: 200px;
+    max-width: 40%;
   }
 
   .group2{
-    max-width: 250px;
+    max-width: 50%;
   }

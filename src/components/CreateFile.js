@@ -79,7 +79,8 @@ class CreateFile extends React.Component {
       
 
     render(){
-        if(this.state.isFile===false){
+      console.log(this.state.fileContent)
+        if(this.state.isFile===false){ 
             return(
               <div className="everything">
                 <div className="title">

@@ -8,7 +8,8 @@ import StayScrolled from 'react-stay-scrolled';
 import {saveAs,FileSaver} from 'file-saver';
 import { Button } from 'reactstrap';
 import { InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
-import "../styles/Main.css"
+import "../styles/Main.css";
+import LineTo from 'react-lineto';
 
 import { readFile, read } from "fs";
 
@@ -21,6 +22,8 @@ class Home extends React.Component {
         this.addHub = this.addHub.bind(this);
         this.CreateFile = this.CreateFile.bind(this);
         this.deleteHub = this.deleteHub.bind(this);
+        this.handleDragVM = this.handleDragVM.bind(this);
+        this.handleDragHub = this.handleDragHub.bind(this);
         this.state={
             VMname:"",
             VMos:"",
@@ -48,12 +51,50 @@ class Home extends React.Component {
             display:[],
             vmChange:false,
             hubChange:false,
-            changeName:""
+            changeName:"",
+           
+            deltaPositionVM: {
+              x:0,y:0
+            },
+            deltaPositionHub: {
+              x:0,y:0
+            },
+            location:{}
            
         }
     }
     handleChange(event) {
         this.setState({[event.target.name]: event.target.value});
+      }
+      upload(){
+        this.setState({file:this.state.file.concat(this.props.file)});
+      }
+      handleDragVM(e,ui) {
+        
+        const {x, y} = this.state.deltaPositionVM;
+        
+        this.setState({
+          deltaPositionVM: {
+            x: x + ui.deltaX,
+            y: y + ui.deltaY,
+          }
+        });
+        console.log(this.state.deltaPositionVM)
+      }
+      handleDragHub(e,ui) {
+        
+        const {x, y} = this.state.deltaPositionHub;
+        
+        this.setState({
+          deltaPositionHub: {
+            x: x + ui.deltaX,
+            y: y + ui.deltaY,
+          }
+        });
+        console.log(this.state.deltaPositionHub)
+      }
+      addPostion(name){
+        console.log("working")
       }
         CreateFile(){
           data["name"]=this.props.id
@@ -374,8 +415,11 @@ class Home extends React.Component {
           }
 
         componentDidMount() {
-           
+           if(this.props.file){
+             this.upload()
+           }
            this.CreateFile()
+           console.log(this.state.file)
         }
         
 
@@ -384,12 +428,13 @@ class Home extends React.Component {
     var Hubs = this.state.Hubs;
     var log = this.state.log;
     var file = this.state.file;
+    
 
             if(this.state.hubChange === false&& this.state.vmChange === false){
             return(
             <div>
   
-                <div className="box" style={{width: '500px', position: 'relative', overflow: 'auto',padding: '0'}} >
+                <div className="box" style={{width: '40%', position: 'relative', overflow: 'auto',padding: '0'}} >
                 <h2>Create Hubs and VMs:</h2>
                 <br/>
                 <br/>
@@ -461,27 +506,32 @@ class Home extends React.Component {
               
 
 
-                <div className="box" style={{height: '500px', width: '1000px', position: 'relative', overflow: 'auto',padding: '0'}}>
+                <div className="box" style={{height: '500px', width: '55%', position: 'relative', overflow: 'auto',padding: '0'}}>
                 <h6>Workspace:</h6>
+                
+
                 
                   {VMs.map(vmname =>{
                     return (
-                     <Draggable bounds="parent">
-                      <div className="box" style={{width: '150px', height: 'auto',backgroundColor: '#e8f0ff'}} >
+                     
+                     <Draggable bounds="parent" onDrag={this.handleDragVM}  >
+                      <div className={vmname} style={{width: '150px', height: 'auto',backgroundColor: '#e8f0ff'}} >
                         <p key={vmname}> <b>VM:</b> {vmname}</p>
+                        
                         <Button color="primary" onClick={() => this.change("vm",vmname)}>Change</Button><br/>
                         <Button color="secondary">Connect</Button>
                         <br/>
                         <Button color="danger" onClick={() => this.deleteVMConfirm(vmname)}>Delete</Button>
                         </div>
                      </Draggable>
+                     
                     );
                   })}
 
                   {Hubs.map(hubname =>{
                     return (
-                     <Draggable bounds="parent">
-                      <div className="box" style={{width: '150px',height: 'auto', backgroundColor: '#e8fdff'}}>
+                     <Draggable bounds="parent" onDrag={this.handleDragHub}>
+                      <div className={hubname} style={{width: '150px',height: 'auto', backgroundColor: '#e8fdff'}}>
                       <p key={hubname}><b>Hub:</b> {hubname}</p>
                       <Button color="primary" onClick={() => this.change("hub",hubname)}>Change</Button>
                       <Button color="secondary">Connect</Button><br/>
@@ -491,10 +541,11 @@ class Home extends React.Component {
                      </Draggable>
                     );
                   })}
+                  <LineTo from={"vm1"} to={"hub1"}/>
                   
          
                 </div>
-                <div className="box" style={{height: '500px', width: '500px'}}>
+                <div className="box" style={{height: '500px', width: '40%'}}>
                 <h6>Information:</h6>
 
                 {file.map((files,i)=>
@@ -503,7 +554,7 @@ class Home extends React.Component {
                   )}
                 </div>  
        
-                 <div className="box" style={{height:"500px",width:"1000px" }}>
+                 <div className="box" style={{height:"500px",width:"55%" }}>
                   <h6>History:</h6>
                   {log.map((lines)=>
                   <div><p>{lines}</p>
