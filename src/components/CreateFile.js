@@ -85,7 +85,7 @@ class CreateFile extends React.Component {
         <div className="everything">
           <div className="title">
             <h2>Welcome to VNetLab</h2>
-            <h4>To get started, created a file</h4>
+            <h4>To get started, create a file</h4>
           </div>
 
           <div className="form">
