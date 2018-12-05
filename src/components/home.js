@@ -456,30 +456,30 @@ class Home extends React.Component {
                     <div className="row">
                       <InputGroup>
                         <InputGroupAddon addonType="prepend">Name: </InputGroupAddon>
-                        <Input name="VMname" value={this.state.VMname} onChange={this.handleChange}></Input>
+                        <Input id="txtVMNAME" name="VMname" value={this.state.VMname} onChange={this.handleChange}></Input>
                       </InputGroup>
 
                       <InputGroup>
                         <InputGroupAddon addonType="prepend">OS: </InputGroupAddon>
-                        <Input  name="VMos" value={this.state.VMos} onChange={this.handleChange}></Input>
+                        <Input  id="txtVMOS" name="VMos" value={this.state.VMos} onChange={this.handleChange}></Input>
                       </InputGroup>
                     </div>
                     <div className="row">
                       <InputGroup>
                         <InputGroupAddon addonType="prepend">Version: </InputGroupAddon>
-                        <Input name="VMversion" value={this.state.VMversion} onChange={this.handleChange}></Input>
+                        <Input id="txtVMVERSION" name="VMversion" value={this.state.VMversion} onChange={this.handleChange}></Input>
                       </InputGroup>
 
                       <InputGroup>
                         <InputGroupAddon addonType="prepend">SRC: </InputGroupAddon>
-                        <Input name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}></Input>
+                        <Input id="txtVMSRC" name="VMsrc" value={this.state.VMsrc} onChange={this.handleChange}></Input>
                       </InputGroup>
                     </div>
 
                     <div className="row">
                       <InputGroup>
                         <InputGroupAddon addonType="prepend">ETH: </InputGroupAddon>
-                        <Input name="VMeth" value={this.state.VMeth} onChange={this.handleChange}></Input>
+                        <Input id="txtVMETH" name="VMeth" value={this.state.VMeth} onChange={this.handleChange}></Input>
                       </InputGroup>
                     </div>
                     <br/>
@@ -489,22 +489,22 @@ class Home extends React.Component {
                   <div className="group2">
                     <InputGroup>
                           <InputGroupAddon addonType="prepend">Name: </InputGroupAddon>
-                          <Input name="HubName" value={this.state.HubName} onChange={this.handleChange}></Input>
+                          <Input id="txtHubName" name="HubName" value={this.state.HubName} onChange={this.handleChange}></Input>
                     </InputGroup>
 
                     <InputGroup>
                           <InputGroupAddon addonType="prepend">Subnet: </InputGroupAddon>
-                          <Input name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></Input>
+                          <Input id="txtHubSubnet" name="HubSubnet" value={this.state.HubSubnet} onChange={this.handleChange}></Input>
                     </InputGroup>
 
                     <InputGroup>
                           <InputGroupAddon addonType="prepend">Netmask: </InputGroupAddon>
-                          <Input  name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></Input>
+                          <Input id="txtHubNetmask" name="HubNetmast" value={this.state.HubNetmast} onChange={this.handleChange}></Input>
                     </InputGroup>
 
                     <InputGroup>
                           <InputGroupAddon addonType="prepend">Interface: </InputGroupAddon>
-                          <Input  name="HubInterface" value={this.state.HubInterface} onChange={this.handleChange}></Input>
+                          <Input id="txtHubInterface" name="HubInterface" value={this.state.HubInterface} onChange={this.handleChange}></Input>
                     </InputGroup>
                   <br/>
                     <Button onClick={()=>this.createHubConfirm()}>Create New Hub</Button>

@@ -91,12 +91,12 @@ class CreateFile extends React.Component {
           <div className="form">
             <InputGroup>
               <InputGroupAddon addonType="prepend">File name: </InputGroupAddon>
-              <Input name="fileName" value={this.state.fileName} onChange={this.handleChange}></Input>
-              <Button onClick={this.openfileConfirm}>Create File</Button>
+              <Input id="txtFileName" name="fileName" value={this.state.fileName} onChange={this.handleChange}></Input>
+              <Button id="btnCreateFile" onClick={this.openfileConfirm}>Create File</Button>
             </InputGroup>
             <a>Need help?</a>
             <ReactFileReader handleFiles={this.handleFiles} fileTypes={[".cfg"]}>
-              <button className='btn'>Upload</button>
+              <button id="btnUpload" className='btn'>Upload</button>
 
             </ReactFileReader>
           </div>
