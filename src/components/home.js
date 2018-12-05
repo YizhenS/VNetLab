@@ -33,7 +33,7 @@ class Home extends React.Component {
             HubName:"",
             HubSubnet:"",
             HubNetmast:"",
-            HubInterface:[],
+            HubInterface:"",
             FileName:this.props.id,
             isFile:false,
             VMs:[],
@@ -180,6 +180,7 @@ class Home extends React.Component {
           message: "You are missing something",
           buttons: [{ label: 'ok' }]
         });
+<<<<<<< HEAD
       } else {
         confirmAlert({
           title: 'Confirm to create VM',
@@ -195,6 +196,21 @@ class Home extends React.Component {
             }
           ]
         });
+=======
+        
+      }
+      handleDragHub(e,ui) {
+        
+        const {x, y} = this.state.deltaPositionHub;
+        
+        this.setState({
+          deltaPositionHub: {
+            x: x + ui.deltaX,
+            y: y + ui.deltaY,
+          }
+        });
+       
+>>>>>>> add connection
       }
     }
     
@@ -261,10 +277,32 @@ class Home extends React.Component {
               label: 'No',
               onClick: () => alert('Create vm canceled')
             }
+<<<<<<< HEAD
           ]
         });
       }
     }
+=======
+          })
+          this.setState({file:this.state.file.concat("VM  :"+name +"{\n os:" + os+"\n version: \u0022" + version + "\u0022\n scr: \u0022" + src + "\u0022 \n eth:\u0022" +eth + "\u0022\n}\n")})
+          this.setState({VMname:"",VMos:"",VMversion:"",VMsrc:"",VMeth:[]})
+        }
+        
+        addHub(name,subnet,netmast,hubinterface){
+          console.log("add hub")
+          this.setState({Hubs: this.state.Hubs.concat([name])
+              })
+              Object.keys(data).forEach((key)=>{
+                if(key === "hub"){
+                  data[key].push({"name":"hub:"+name,"subnet":subnet,"netmask":netmast,"interface":hubinterface.split(";")})
+                }
+              })
+          this.setState({log:this.state.log.concat(["hub: "+name +"was created"])})
+          this.setState({file:this.state.file.concat("Hub    :"+name +"{\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n}\n")})
+          this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})
+          
+        }
+>>>>>>> add connection
 
     /* open confirmation dialog for updating a virtual machine */
     changeVMConfirm = () => {
@@ -319,6 +357,7 @@ class Home extends React.Component {
       }
     }
 
+<<<<<<< HEAD
     /* save the configuration */
     save() {
       var blob = new Blob([this.state.file], {type: "text/plain;charset=utf-8"});
@@ -338,6 +377,109 @@ class Home extends React.Component {
           {
             label: 'No',
             onClick: () => alert('delete hub canceled')
+=======
+          createVMConfirm =() =>{
+            if (this.state.VMname === "" || this.state.VMos === "" || this.state.VMsrc === "" || this.state.VMversion === "" || this.state.VMeth === ""){
+              confirmAlert({
+                title:"VM attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to create VM',
+                message: 'Are you sure vm name as: ' + this.state.VMname,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => this.addVm(this.state.VMname,this.state.VMos,this.state.VMversion,this.state.VMsrc,this.state.VMeth)
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+          }
+          
+          createHubConfirm =() =>{
+            if (this.state.HubName === "" || this.state.HubInterface === "" || this.state.HubNetmast === "" || this.state.HubSubnet === "" ){
+              confirmAlert({
+                title:"Hub attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to create Hub',
+                message: 'Are you sure hub name as: ' + this.state.HubName,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => this.addHub(this.state.HubName,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface)
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+          }
+          addHub(name,subnet,netmast,hubinterface){
+            console.log("add hub")
+            this.setState({Hubs: this.state.Hubs.concat([name])
+                })
+                Object.keys(data).forEach((key)=>{
+                  if(key === "hub"){
+                    data[key].push({"name":name,"subnet":subnet,"netmask":netmast,"interface":hubinterface.split(";")})
+                  }
+                })
+            this.setState({log:this.state.log.concat(["Hub: "+name +" was changed"])})
+            this.setState({file:this.state.file.concat("Hub    :"+name +" {\n inf:" + hubinterface+"\n subnet: \u0022" + subnet + "\u0022\n netmast: \u0022" + netmast + "\u0022\n interface: \u0022"+hubinterface+"\u0022\n}\n")})
+            this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})
+            
+          }
+          changeHubConfirm =() =>{
+            if (this.state.HubName === "" && this.state.HubInterface === "" && this.state.HubNetmast === "" && this.state.HubSubnet === "" ){
+              confirmAlert({
+                title:"Hub attribute missing",
+                message: "You are missing something",
+                buttons:[
+                  {
+                    label:'ok'
+                  }
+                ]
+
+              })
+             }else{
+              confirmAlert({
+                title: 'Confirm to create Hub',
+                message: 'Are you sure hub name as: ' + this.state.HubName,
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => {this.changeHub(this.state.HubName,this.state.HubSubnet,this.state.HubNetmast,this.state.HubInterface,);this.setState({hubChange:false});this.setState({HubName:"",HubSubnet:"",HubNetmast:"",HubInterface:""})}
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => alert('Create vm canceled')
+                  }
+                ]
+              })
+             }
+>>>>>>> add connection
           }
         ]
       });
@@ -401,10 +543,19 @@ class Home extends React.Component {
       this.setState({log:this.state.log.concat(["hub: "+name +"was changed"])});
     }
 
+<<<<<<< HEAD
     /* upload a file and create a new configuration file when component is mounted */
     componentDidMount() {
         if(this.props.file){
           this.upload();
+=======
+        componentDidMount() {
+           if(this.props.file){
+             this.upload()
+           }
+           this.CreateFile()
+           
+>>>>>>> add connection
         }
         this.CreateFile();
     }
@@ -416,7 +567,6 @@ class Home extends React.Component {
       var log = this.state.log;
       var file = this.state.file;
     
-
             if(this.state.hubChange === false&& this.state.vmChange === false){
             return(
             <div>
@@ -502,12 +652,12 @@ class Home extends React.Component {
                     return (
                      
                      <Draggable bounds="parent" onDrag={this.handleDragVM}  >
-                      <div className={vmname} style={{width: '150px', height: 'auto',backgroundColor: '#e8f0ff'}} >
+                      <div className={"vm"+vmname} style={{width: '150px', height: 'auto',backgroundColor: '#e8f0ff'}} >
                         <p key={vmname}> <b>VM:</b> {vmname}</p>
                         
                         <Button color="primary" onClick={() => this.change("vm",vmname)}>Change</Button><br/>
-                        <Button color="secondary">Connect</Button>
-                        <br/>
+                    
+                       
                         <Button color="danger" onClick={() => this.deleteVMConfirm(vmname)}>Delete</Button>
                         </div>
                      </Draggable>
@@ -518,17 +668,39 @@ class Home extends React.Component {
                   {Hubs.map(hubname =>{
                     return (
                      <Draggable bounds="parent" onDrag={this.handleDragHub}>
-                      <div className={hubname} style={{width: '150px',height: 'auto', backgroundColor: '#e8fdff'}}>
+                      <div className={"hub"+hubname} style={{width: '150px',height: 'auto', backgroundColor: '#e8fdff'}}>
                       <p key={hubname}><b>Hub:</b> {hubname}</p>
                       <Button color="primary" onClick={() => this.change("hub",hubname)}>Change</Button>
-                      <Button color="secondary">Connect</Button><br/>
+                      
                       
                       <Button color="danger" onClick={() => this.deleteHubConfirm(hubname)}>Delete</Button>
                       </div>
                      </Draggable>
                     );
                   })}
-                  <LineTo from={"vm1"} to={"hub1"}/>
+                  {Object.keys(data["hub"]).map((i)=>{
+                    var hubname = data["hub"][i]["name"]
+                    return(
+                      Object.keys(data["hub"][i]["interface"]).map(a=>{
+                      var vmname = data["hub"][i]["interface"][a]
+                      console.log(vmname)
+                      return(
+                        <div>
+                          
+                          <LineTo from={"vm"+vmname} to={"hub"+hubname}/>
+                          
+                        </div>
+                      )
+                    }))
+                    
+                    
+                    
+                   
+                  })}
+
+                 
+                  
+                 
                   
          
                 </div>
