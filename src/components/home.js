@@ -24,6 +24,7 @@ class Home extends React.Component {
         this.deleteHub = this.deleteHub.bind(this);
         this.handleDragVM = this.handleDragVM.bind(this);
         this.handleDragHub = this.handleDragHub.bind(this);
+        this.validateIP = this.validateIP.bind(this);
         this.state={
             VMname:"",
             VMos:"",
@@ -176,8 +177,28 @@ class Home extends React.Component {
             };
             this.setState({log:this.state.log.concat(["vm: "+name +"was deleted"])})  
           }
- /* open confirmation dialog for creating a virtual machine */
+
+          validateIP(ipaddress) {
+            if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {  
+              return true;
+            }
+            return false;
+          }
+          
+          /* open confirmation dialog for creating a virtual machine */
           createVMConfirm =() =>{
+
+            let os = this.state.VMos;
+            if (os !== 'linux' || os !== 'unix' || os !== 'windows') {
+              alert('Error!  Invalid operating system.');
+            }
+
+            let eth = this.state.VMeth;
+            if (!this.validateIP(eth)) {
+              alert('Creation Error! [vm.interfaces] Invalid IP format: ' + eth);
+              return;
+            }
+
             if (this.state.VMname === "" || this.state.VMos === "" || this.state.VMsrc === "" || this.state.VMversion === "" || this.state.VMeth === ""){
               confirmAlert({
                 title:"VM attribute missing",
@@ -207,7 +228,18 @@ class Home extends React.Component {
              }
           }
           /* open confirmation dialog for creating a hub */
-          createHubConfirm =() =>{
+          createHubConfirm =() => {
+
+            if (!this.validateIP(this.state.HubSubnet)) {
+              alert('Creation Error: [hub.subnet] - Invalid IP format.');
+              return;
+            }
+            if (!this.validateIP(this.state.HubNetmast)) {
+              alert('Creation Error: [hub.netmask] - Invalid IP format.');
+              return;
+            }
+
+
             if (this.state.HubName === "" || this.state.HubInterface === "" || this.state.HubNetmast === "" || this.state.HubSubnet === "" ){
               confirmAlert({
                 title:"Hub attribute missing",
@@ -253,7 +285,7 @@ class Home extends React.Component {
             
           }
           /* open confirmation dialog for updating a hub */
-          changeHubConfirm =() =>{
+          changeHubConfirm =() => {
             if (this.state.HubName === "" && this.state.HubInterface === "" && this.state.HubNetmast === "" && this.state.HubSubnet === "" ){
               confirmAlert({
                 title:"Hub attribute missing",
